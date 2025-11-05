@@ -1,0 +1,12 @@
+scan:
+  scanners:
+    - vuln
+    - secret
+    - config
+severity:
+  - LOW
+  - MEDIUM
+  - HIGH
+  - CRITICAL
+exit-code: 1
+format: table

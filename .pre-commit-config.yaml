@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: trailing-whitespace
+        name: "Remove trailing whitespaces"
+      - id: end-of-file-fixer
+        name: "Ensure file ends with a newline"
+      - id: check-yaml
+        name: "Check yaml files"
+      - id: check-merge-conflict
+        name: "Check for merge conflicts"
+
+  - repo: https://github.com/AleksaC/terraform-py
+    rev: v1.13.4
+    hooks:
+      - id: tf-fmt
+        name: "Run terraform fmt"

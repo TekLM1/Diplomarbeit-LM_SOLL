@@ -1,0 +1,62 @@
+image:
+  name: hashicorp/terraform:latest
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}/EC2-DA_LM-Secure/ # The relative path to the root directory of the Terraform project.
+  TF_STATE_NAME: ${TF_STATE_NAME:-default}  # The name of the state file used by the GitLab Managed Terraform state backend.
+  SECURITY_CONF_DIR: ${TF_ROOT}/security-conf
+
+stages:
+  - fmt
+  - validate
+  - security
+  - plan
+  - apply
+  - destroy
+
+before_script:
+
+check_fmt:
+  stage: fmt
+
+.terraform:validate:
+  stage: validate
+
+.terraform:security:
+  stage: security
+  before_script:
+    - chmod +x ./check_security_scan.sh
+  script:
+    - ./check_security_scan.sh
+
+.terraform:plan:
+  stage: plan
+
+.terraform:apply:
+  stage: apply
+
+.terraform:destroy:
+  stage: destroy
+
+validate:
+  extends: .terraform:validate
+  dependencies:
+    - check_fmt
+
+security:
+  extends: .terraform:security
+  dependencies:
+    - validate
+
+plan:
+  extends: .terraform:plan
+  dependencies:
+    - security
+
+apply:
+  extends: .terraform:apply
+  dependencies:
+    - plan
